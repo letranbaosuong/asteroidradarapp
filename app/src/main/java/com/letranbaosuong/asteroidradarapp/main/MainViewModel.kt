@@ -7,14 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.letranbaosuong.asteroidradarapp.api.NasaApi
 import com.letranbaosuong.asteroidradarapp.repositories.Repository
 import com.letranbaosuong.asteroidradarapp.utilities.Constants
 import com.letranbaosuong.asteroidradarapp.utilities.Constants.DEFAULT_END_DATE_DAYS
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -22,7 +18,8 @@ import java.util.Locale
 
 class MainViewModel : ViewModel() {
     private val _response = MutableLiveData<String>()
-    private val _repos = Repository()
+    private val repos = Repository()
+    val image = repos.image
     val response: LiveData<String> get() = _response
 
     init {
@@ -57,11 +54,12 @@ class MainViewModel : ViewModel() {
         val endDate = getDateString(getEndDate())
         viewModelScope.launch {
             try {
-                _repos.asteroidsByDates(
+                repos.asteroidsByDates(
                     startDate = startDate,
                     endDate = endDate,
                     apiKey = Constants.apiKey,
                 )
+                repos.getImageInfo(apiKey = Constants.apiKey)
             } catch (e: Exception) {
                 Log.e("Exception", "${e.message}")
             }

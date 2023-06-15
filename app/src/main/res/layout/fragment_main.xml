@@ -25,9 +25,11 @@
 
             <ImageView
                 android:id="@+id/activity_main_image_of_the_day"
+                picSrc="@{viewModel.image.url}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
+                android:contentDescription="@{viewModel.image.title}"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/placeholder_picture_of_day" />
 
@@ -37,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
+                android:contentDescription="@{viewModel.response}"
                 android:padding="16dp"
                 android:text="@string/image_of_the_day"
                 android:textColor="@android:color/white"
