@@ -1,5 +1,6 @@
 package com.letranbaosuong.asteroidradarapp.api
 
+import android.annotation.SuppressLint
 import android.os.Build
 import com.letranbaosuong.asteroidradarapp.models.Asteroid
 import com.letranbaosuong.asteroidradarapp.utilities.Constants
@@ -45,6 +46,7 @@ fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
     return asteroidList
 }
 
+@SuppressLint("WeekBasedYear")
 private fun getNextSevenDaysFormattedDates(): ArrayList<String> {
     val formattedDateList = ArrayList<String>()
 
