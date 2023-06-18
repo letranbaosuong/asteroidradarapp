@@ -35,7 +35,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             Asteroid(0, "name", "", 0.0, 0.0, 0.0, 0.0, true),
             Asteroid(0, "name", "", 0.0, 0.0, 0.0, 0.0, true),
         )
-        _asteroidDatabaseDao = DatabaseProvider.getDatabaseInstance(application).asteroidDatabaseDao
+        _asteroidDatabaseDao =
+            AsteroidDatabase.getDatabaseInstance(application)!!.asteroidDatabaseDao
 
         GlobalScope.launch(Dispatchers.IO) {
             _asteroidDatabaseDao.insertAll(dataList)
