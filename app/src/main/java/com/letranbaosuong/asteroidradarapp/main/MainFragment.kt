@@ -41,7 +41,6 @@ class MainFragment : Fragment() {
 //            AsteroidDatabase.getDatabaseInstance(requireContext()).asteroidDatabaseDao
         val viewModelFactory = MainViewModelFactory(requireActivity().application)
         val mainViewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-//        mainViewModel.viewModelScope
 
         return binding.root
     }

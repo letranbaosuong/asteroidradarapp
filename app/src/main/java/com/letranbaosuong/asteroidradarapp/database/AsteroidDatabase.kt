@@ -33,19 +33,3 @@ abstract class AsteroidDatabase : RoomDatabase() {
     }
 }
 
-object DatabaseProvider {
-    private var database: AsteroidDatabase? = null
-
-    fun getDatabaseInstance(context: Context): AsteroidDatabase {
-        return database ?: synchronized(this) {
-            val instance = Room.databaseBuilder(
-                context.applicationContext,
-                AsteroidDatabase::class.java,
-                "asteroid_database_db"
-            ).build()
-            database = instance
-            instance
-        }
-    }
-}
-

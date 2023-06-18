@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.letranbaosuong.asteroidradarapp.database.AsteroidDatabase
 import com.letranbaosuong.asteroidradarapp.database.AsteroidDatabaseDao
-import com.letranbaosuong.asteroidradarapp.database.DatabaseProvider
 import com.letranbaosuong.asteroidradarapp.models.Asteroid
 import com.letranbaosuong.asteroidradarapp.models.PictureOfDay
 import com.letranbaosuong.asteroidradarapp.repositories.Repository
@@ -27,8 +26,8 @@ import java.util.Locale
 @OptIn(DelicateCoroutinesApi::class)
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var _asteroidDatabaseDao: AsteroidDatabaseDao
-//    private var _repository: Repository
-//    val image: LiveData<PictureOfDay>
+    private var _repository: Repository
+    val image: LiveData<PictureOfDay>
 
     init {
         val dataList = arrayListOf(
@@ -36,16 +35,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             Asteroid(0, "name", "", 0.0, 0.0, 0.0, 0.0, true),
         )
         _asteroidDatabaseDao =
-            AsteroidDatabase.getDatabaseInstance(application)!!.asteroidDatabaseDao
-
+            AsteroidDatabase.getDatabaseInstance(application).asteroidDatabaseDao
+        _repository = Repository(_asteroidDatabaseDao)
+        image = _repository.image
         GlobalScope.launch(Dispatchers.IO) {
             _asteroidDatabaseDao.insertAll(dataList)
         }
-
-//        _asteroidDatabaseDao =
-//            DatabaseProvider.getDatabaseInstance(application).asteroidDatabaseDao
-//        _repository = Repository(_asteroidDatabaseDao)
-//        image = _repository.image
         fetchAsteroidsByDates()
     }
 
@@ -77,12 +72,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val endDate = getDateString(getEndDate())
         viewModelScope.launch {
             try {
-//                _repository.asteroidsByDates(
-//                    startDate = startDate,
-//                    endDate = endDate,
-//                    apiKey = Constants.apiKey,
-//                )
-//                _repository.getImageInfo(apiKey = Constants.apiKey)
+                _repository.asteroidsByDates(
+                    startDate = startDate,
+                    endDate = endDate,
+                    apiKey = Constants.apiKey,
+                )
+                _repository.getImageInfo(apiKey = Constants.apiKey)
             } catch (e: Exception) {
                 Log.e("Exception", "${e.message}")
             }
