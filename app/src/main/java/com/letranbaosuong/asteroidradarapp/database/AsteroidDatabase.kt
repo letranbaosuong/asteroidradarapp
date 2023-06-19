@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.letranbaosuong.asteroidradarapp.models.Asteroid
-import java.util.concurrent.Executors
 
 //@Database(entities = [Asteroid::class], version = 1, exportSchema = false)
 @Database(entities = [Asteroid::class], version = 1, exportSchema = true)
@@ -24,7 +22,7 @@ abstract class AsteroidDatabase : RoomDatabase() {
                         context.applicationContext,
                         AsteroidDatabase::class.java,
                         "asteroid_database_db"
-                    ).build()
+                    ).fallbackToDestructiveMigration().build()
                     INSTANCE = instance
                 }
                 return instance

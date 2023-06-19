@@ -5,7 +5,7 @@
     <data>
 
         <variable
-            name="viewModel"
+            name="mainViewModel"
             type="com.letranbaosuong.asteroidradarapp.main.MainViewModel" />
 
     </data>
@@ -25,10 +25,11 @@
 
             <ImageView
                 android:id="@+id/activity_main_image_of_the_day"
+                imageSrc="@{mainViewModel.image.url}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:contentDescription="viewModel.image.title"
+                android:contentDescription="@{mainViewModel.image.title}"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/placeholder_picture_of_day" />
 
@@ -38,9 +39,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
-                android:contentDescription="contentDescription"
+                android:contentDescription="@{mainViewModel.image.title}"
                 android:padding="16dp"
-                android:text="@string/image_of_the_day"
+                android:text="@{mainViewModel.image.title}"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />

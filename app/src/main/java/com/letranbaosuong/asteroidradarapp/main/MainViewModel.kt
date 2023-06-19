@@ -14,34 +14,25 @@ import com.letranbaosuong.asteroidradarapp.models.PictureOfDay
 import com.letranbaosuong.asteroidradarapp.repositories.Repository
 import com.letranbaosuong.asteroidradarapp.utilities.Constants
 import com.letranbaosuong.asteroidradarapp.utilities.Constants.DEFAULT_END_DATE_DAYS
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-@OptIn(DelicateCoroutinesApi::class)
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var _asteroidDatabaseDao: AsteroidDatabaseDao
     private var _repository: Repository
     val image: LiveData<PictureOfDay>
+    val listAsteroid: LiveData<List<Asteroid>>
 
     init {
-        val dataList = arrayListOf(
-            Asteroid(0, "name", "", 0.0, 0.0, 0.0, 0.0, true),
-            Asteroid(0, "name", "", 0.0, 0.0, 0.0, 0.0, true),
-        )
         _asteroidDatabaseDao =
             AsteroidDatabase.getDatabaseInstance(application).asteroidDatabaseDao
         _repository = Repository(_asteroidDatabaseDao)
+        fetchData()
         image = _repository.image
-        GlobalScope.launch(Dispatchers.IO) {
-            _asteroidDatabaseDao.insertAll(dataList)
-        }
-        fetchAsteroidsByDates()
+        listAsteroid = _repository.listAsteroid
     }
 
     @SuppressLint("WeekBasedYear")
@@ -67,20 +58,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return day.time
     }
 
-    private fun fetchAsteroidsByDates() {
-        val startDate = getDateString(getStartDate())
-        val endDate = getDateString(getEndDate())
-        viewModelScope.launch {
-            try {
+    private fun fetchData() {
+        try {
+            val startDate = getDateString(getStartDate())
+            val endDate = getDateString(getEndDate())
+
+            viewModelScope.launch {
+                _repository.getImageInfo(apiKey = Constants.apiKey)
                 _repository.asteroidsByDates(
                     startDate = startDate,
                     endDate = endDate,
                     apiKey = Constants.apiKey,
                 )
-                _repository.getImageInfo(apiKey = Constants.apiKey)
-            } catch (e: Exception) {
-                Log.e("Exception", "${e.message}")
+
             }
+        } catch (e: Exception) {
+            Log.e("fetchAsteroidsByDates", "${e.message}")
         }
+
     }
 }
