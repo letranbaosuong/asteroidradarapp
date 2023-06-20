@@ -104,8 +104,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onMenuSelected(item: MenuItem) {
         when (item.itemId) {
-            R.id.show_all_menu -> _filterAsteroid.value = FilterAsteroid.WEEK
-            R.id.show_rent_menu -> _filterAsteroid.value = FilterAsteroid.TODAY
+            R.id.show_week_menu -> _filterAsteroid.value = FilterAsteroid.WEEK
+            R.id.show_today_menu -> _filterAsteroid.value = FilterAsteroid.TODAY
             else -> _filterAsteroid.value = FilterAsteroid.SAVED
         }
     }
