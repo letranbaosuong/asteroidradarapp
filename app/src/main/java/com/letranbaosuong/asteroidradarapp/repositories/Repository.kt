@@ -1,7 +1,6 @@
 package com.letranbaosuong.asteroidradarapp.repositories
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.letranbaosuong.asteroidradarapp.api.NasaApi
 import com.letranbaosuong.asteroidradarapp.api.parseAsteroidsJsonResult
 import com.letranbaosuong.asteroidradarapp.database.AsteroidDatabaseDao
@@ -11,10 +10,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
+enum class FilterAsteroid { SAVED, TODAY, WEEK }
 class Repository(private val database: AsteroidDatabaseDao) {
-    private val _images = MutableLiveData<PictureOfDay>()
-    val image: LiveData<PictureOfDay> = _images
-    val listAsteroid: LiveData<List<Asteroid>> = database.getAsteroidList()
+    val image: LiveData<PictureOfDay> = database.getAsteroidPicture()
+    val getAsteroidList: LiveData<List<Asteroid>> = database.getAsteroidList()
+    fun getWeekAsteroids(startWeek: String, endWeek: String) =
+        database.getWeekAsteroids(startWeek = startWeek, endWeek = endWeek)
+
+    fun getTodayAsteroids(today: String) = database.getTodayAsteroids(today)
+
     suspend fun asteroidsByDates(startDate: String, endDate: String, apiKey: String) {
         withContext(Dispatchers.IO) {
             val data = parseAsteroidsJsonResult(
@@ -26,17 +30,15 @@ class Repository(private val database: AsteroidDatabaseDao) {
                     )
                 )
             )
-            database.delete()
-            database.insertAll(data)
+            database.deleteAsteroid()
+            database.insertAsteroidAll(data)
         }
     }
 
-    suspend fun getImageInfo(apiKey: String) {
-        val scope = withContext(Dispatchers.IO) {
-            return@withContext NasaApi.retrofitService.getImageInfo(apiKey)
-        }
-        scope.let {
-            _images.value = it
+    suspend fun getPicture(apiKey: String) {
+        withContext(Dispatchers.IO) {
+            val data = NasaApi.retrofitService.getImageInfo(apiKey)
+            database.insertAsteroidPicture(data)
         }
     }
 }

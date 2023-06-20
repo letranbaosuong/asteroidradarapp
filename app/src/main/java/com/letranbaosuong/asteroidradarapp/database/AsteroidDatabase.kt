@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.letranbaosuong.asteroidradarapp.models.Asteroid
+import com.letranbaosuong.asteroidradarapp.models.PictureOfDay
 
-//@Database(entities = [Asteroid::class], version = 1, exportSchema = false)
-@Database(entities = [Asteroid::class], version = 1, exportSchema = true)
+@Database(entities = [Asteroid::class, PictureOfDay::class], version = 2, exportSchema = true)
 abstract class AsteroidDatabase : RoomDatabase() {
     abstract val asteroidDatabaseDao: AsteroidDatabaseDao
 

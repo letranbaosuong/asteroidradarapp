@@ -59,12 +59,13 @@ dependencies {
 
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$version_lifecycle"
 
     // Retrofit with Moshi Converter
     implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
     implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
     implementation "com.squareup.retrofit2:converter-scalars:$version_retrofit"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 
     // Moshi
     implementation "com.squareup.moshi:moshi:1.13.0"

@@ -43,6 +43,6 @@ fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
 }
 
 @BindingAdapter("imageSrc")
-fun bindImg(imageView: ImageView,url: String?){
+fun bindImg(imageView: ImageView, url: String?) {
     Picasso.get().load(url).into(imageView)
 }

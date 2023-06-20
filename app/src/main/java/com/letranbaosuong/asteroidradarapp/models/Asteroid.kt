@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
+@Suppress("DEPRECATED_ANNOTATION")
 @Parcelize
 @Entity(tableName = "asteroid_database")
 data class Asteroid(

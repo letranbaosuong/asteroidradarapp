@@ -41,7 +41,7 @@
                 android:background="#55010613"
                 android:contentDescription="@{mainViewModel.image.title}"
                 android:padding="16dp"
-                android:text="@{mainViewModel.image.title}"
+                android:text="@string/image_of_the_day"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
