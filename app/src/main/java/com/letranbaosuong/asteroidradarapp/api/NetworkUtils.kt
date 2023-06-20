@@ -58,7 +58,7 @@ private fun getNextSevenDaysFormattedDates(): ArrayList<String> {
         val dateFormat = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
         } else {
-            TODO("VERSION.SDK_INT < N")
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         }
         formattedDateList.add(dateFormat.format(currentTime))
         calendar.add(Calendar.DAY_OF_YEAR, 1)

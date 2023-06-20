@@ -9,7 +9,7 @@ import com.letranbaosuong.asteroidradarapp.models.PictureOfDay
 import com.letranbaosuong.asteroidradarapp.utilities.Constants
 import com.letranbaosuong.asteroidradarapp.utilities.getDateString
 import com.letranbaosuong.asteroidradarapp.utilities.getEndDate
-import com.letranbaosuong.asteroidradarapp.utilities.getStartDate
+import com.letranbaosuong.asteroidradarapp.utilities.getCurrentDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -34,7 +34,6 @@ class AsteroidRepository(private val database: AsteroidDatabaseDao) {
                     )
                 )
             )
-            database.deleteAsteroid()
             database.insertAsteroidAll(data)
         }
     }
@@ -47,9 +46,8 @@ class AsteroidRepository(private val database: AsteroidDatabaseDao) {
     }
 
     suspend fun refreshAsteroidData() {
-        val startDate = getDateString(getStartDate())
+        val startDate = getDateString(getCurrentDate())
         val endDate = getDateString(getEndDate())
-        getPicture(apiKey = Constants.apiKey)
         getAsteroidsByDates(
             startDate = startDate,
             endDate = endDate,

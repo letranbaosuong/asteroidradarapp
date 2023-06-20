@@ -19,10 +19,13 @@ import com.letranbaosuong.asteroidradarapp.models.PictureOfDay
 import com.letranbaosuong.asteroidradarapp.repositories.AsteroidRepository
 import com.letranbaosuong.asteroidradarapp.repositories.FilterAsteroid
 import com.letranbaosuong.asteroidradarapp.utilities.Constants
+import com.letranbaosuong.asteroidradarapp.utilities.getCurrentDate
 import com.letranbaosuong.asteroidradarapp.utilities.getDateString
 import com.letranbaosuong.asteroidradarapp.utilities.getEndDate
-import com.letranbaosuong.asteroidradarapp.utilities.getStartDate
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.util.Calendar
+import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.M)
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -32,14 +35,29 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _filterAsteroid = MutableLiveData(FilterAsteroid.SAVED)
     val image: LiveData<PictureOfDay> = _asteroidRepository.image
     val listAsteroid = _filterAsteroid.switchMap {
-        val startDate = getDateString(getStartDate())
-        val endDate = getDateString(getEndDate())
+        val currentDate = Date()
         when (it) {
-            FilterAsteroid.TODAY -> _asteroidRepository.getTodayAsteroids(startDate)
-            FilterAsteroid.WEEK -> _asteroidRepository.getWeekAsteroids(
-                startWeek = startDate,
-                endWeek = endDate
-            )
+            FilterAsteroid.SAVED -> _asteroidRepository.getAsteroidList
+            FilterAsteroid.TODAY -> _asteroidRepository.getTodayAsteroids(getDateString(currentDate))
+            FilterAsteroid.WEEK -> {
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.DAY_OF_YEAR, 1)
+                val weekStartDate = calendar.apply {
+                    set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }.time
+                val startDate = getDateString(weekStartDate)
+                calendar.add(Calendar.DAY_OF_YEAR, Constants.DEFAULT_END_DATE_DAYS)
+                val weekEndDate = calendar.time
+                val endDate = getDateString(weekEndDate)
+                Timber.d("startDate $startDate endDate $endDate")
+                _asteroidRepository.getWeekAsteroids(
+                    startWeek = startDate, endWeek = endDate
+                )
+            }
 
             else -> _asteroidRepository.getAsteroidList
         }
@@ -54,7 +72,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     @SuppressLint("LogNotTimber")
     private fun fetchData() {
         try {
-            val startDate = getDateString(getStartDate())
+            val startDate = getDateString(getCurrentDate())
             val endDate = getDateString(getEndDate())
 
             viewModelScope.launch {
@@ -82,6 +100,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         when (item.itemId) {
             R.id.show_week_menu -> _filterAsteroid.value = FilterAsteroid.WEEK
             R.id.show_today_menu -> _filterAsteroid.value = FilterAsteroid.TODAY
+            R.id.show_saved_menu -> _filterAsteroid.value = FilterAsteroid.SAVED
             else -> _filterAsteroid.value = FilterAsteroid.SAVED
         }
     }

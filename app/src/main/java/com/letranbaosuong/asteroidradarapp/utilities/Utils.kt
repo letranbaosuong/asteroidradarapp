@@ -18,7 +18,7 @@ fun getDateString(day: Date): String {
 }
 
 @SuppressLint("WeekBasedYear")
-fun getStartDate(): Date {
+fun getCurrentDate(): Date {
     val day = Calendar.getInstance()
     return day.time
 }
