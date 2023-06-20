@@ -16,34 +16,32 @@ import androidx.lifecycle.viewModelScope
 import com.letranbaosuong.asteroidradarapp.R
 import com.letranbaosuong.asteroidradarapp.database.AsteroidDatabase
 import com.letranbaosuong.asteroidradarapp.models.PictureOfDay
+import com.letranbaosuong.asteroidradarapp.repositories.AsteroidRepository
 import com.letranbaosuong.asteroidradarapp.repositories.FilterAsteroid
-import com.letranbaosuong.asteroidradarapp.repositories.Repository
 import com.letranbaosuong.asteroidradarapp.utilities.Constants
-import com.letranbaosuong.asteroidradarapp.utilities.Constants.DEFAULT_END_DATE_DAYS
+import com.letranbaosuong.asteroidradarapp.utilities.getDateString
+import com.letranbaosuong.asteroidradarapp.utilities.getEndDate
+import com.letranbaosuong.asteroidradarapp.utilities.getStartDate
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.M)
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var _asteroidDatabaseDao =
         AsteroidDatabase.getDatabaseInstance(application).asteroidDatabaseDao
-    private var _repository = Repository(_asteroidDatabaseDao)
+    private var _asteroidRepository = AsteroidRepository(_asteroidDatabaseDao)
     private val _filterAsteroid = MutableLiveData(FilterAsteroid.SAVED)
-    val image: LiveData<PictureOfDay> = _repository.image
+    val image: LiveData<PictureOfDay> = _asteroidRepository.image
     val listAsteroid = _filterAsteroid.switchMap {
         val startDate = getDateString(getStartDate())
         val endDate = getDateString(getEndDate())
         when (it) {
-            FilterAsteroid.TODAY -> _repository.getTodayAsteroids(startDate)
-            FilterAsteroid.WEEK -> _repository.getWeekAsteroids(
+            FilterAsteroid.TODAY -> _asteroidRepository.getTodayAsteroids(startDate)
+            FilterAsteroid.WEEK -> _asteroidRepository.getWeekAsteroids(
                 startWeek = startDate,
                 endWeek = endDate
             )
 
-            else -> _repository.getAsteroidList
+            else -> _asteroidRepository.getAsteroidList
         }
     }
 
@@ -53,37 +51,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    @SuppressLint("WeekBasedYear")
-    private fun getDateString(day: Date): String {
-        val date = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
-        } else {
-            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        }
-        return date.format(day.time)
-    }
-
-    @SuppressLint("WeekBasedYear")
-    private fun getStartDate(): Date {
-        val day = Calendar.getInstance()
-        return day.time
-    }
-
-    @SuppressLint("WeekBasedYear")
-    private fun getEndDate(): Date {
-        val day = Calendar.getInstance()
-        day.add(Calendar.DAY_OF_YEAR, DEFAULT_END_DATE_DAYS)
-        return day.time
-    }
-
+    @SuppressLint("LogNotTimber")
     private fun fetchData() {
         try {
             val startDate = getDateString(getStartDate())
             val endDate = getDateString(getEndDate())
 
             viewModelScope.launch {
-                _repository.getPicture(apiKey = Constants.apiKey)
-                _repository.asteroidsByDates(
+                _asteroidRepository.getPicture(apiKey = Constants.apiKey)
+                _asteroidRepository.getAsteroidsByDates(
                     startDate = startDate,
                     endDate = endDate,
                     apiKey = Constants.apiKey,
