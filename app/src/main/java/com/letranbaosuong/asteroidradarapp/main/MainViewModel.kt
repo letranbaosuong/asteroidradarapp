@@ -41,18 +41,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             FilterAsteroid.TODAY -> _asteroidRepository.getTodayAsteroids(getDateString(currentDate))
             FilterAsteroid.WEEK -> {
                 val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, 1)
-                val weekStartDate = calendar.apply {
-                    set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
-                    set(Calendar.HOUR_OF_DAY, 0)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
-                    set(Calendar.MILLISECOND, 0)
-                }.time
-                val startDate = getDateString(weekStartDate)
-                calendar.add(Calendar.DAY_OF_YEAR, Constants.DEFAULT_END_DATE_DAYS)
-                val weekEndDate = calendar.time
-                val endDate = getDateString(weekEndDate)
+                calendar.add(
+                    Calendar.DAY_OF_MONTH,
+                    Calendar.MONDAY - calendar[Calendar.DAY_OF_WEEK]
+                )
+                val startDate = getDateString(calendar.time)
+                calendar.add(Calendar.DAY_OF_YEAR, Constants.DEFAULT_END_DATE_DAYS - 1)
+                val endDate = getDateString(calendar.time)
                 Timber.d("startDate $startDate endDate $endDate")
                 _asteroidRepository.getWeekAsteroids(
                     startWeek = startDate, endWeek = endDate
@@ -72,8 +67,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     @SuppressLint("LogNotTimber")
     private fun fetchData() {
         try {
-            val startDate = getDateString(getCurrentDate())
-            val endDate = getDateString(getEndDate())
+            val calendar = Calendar.getInstance()
+            calendar.add(
+                Calendar.DAY_OF_MONTH,
+                Calendar.MONDAY - calendar[Calendar.DAY_OF_WEEK]
+            )
+            val startDate = getDateString(calendar.time)
+            calendar.add(Calendar.DAY_OF_YEAR, Constants.DEFAULT_END_DATE_DAYS - 1)
+            val endDate = getDateString(calendar.time)
 
             viewModelScope.launch {
                 _asteroidRepository.getPicture(apiKey = Constants.apiKey)
