@@ -4,6 +4,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -27,6 +28,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexKeepProguard file('multidex-config.pro')
         }
+        buildTypes.each {
+            it.buildConfigField 'String', 'THE_ASTEROID_API_KEY', ASTEROID_API_KEY
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -37,6 +41,9 @@ android {
     }
     buildFeatures {
         dataBinding true
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 

@@ -17,10 +17,11 @@
 
         <ImageView
             android:id="@+id/activity_main_image_of_the_day"
+            asteroidStatusImage="@{asteroid.potentiallyHazardous}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:contentDescription="@{asteroid.codename}"
+            android:contentDescription="@string/potentially_hazardous_asteroid_image"
             app:asteroidStatusImage="@{asteroid.potentiallyHazardous}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

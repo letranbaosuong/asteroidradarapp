@@ -67,14 +67,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     @SuppressLint("LogNotTimber")
     private fun fetchData() {
         try {
-            val calendar = Calendar.getInstance()
-            calendar.add(
-                Calendar.DAY_OF_MONTH,
-                Calendar.MONDAY - calendar[Calendar.DAY_OF_WEEK]
-            )
-            val startDate = getDateString(calendar.time)
-            calendar.add(Calendar.DAY_OF_YEAR, Constants.DEFAULT_END_DATE_DAYS - 1)
-            val endDate = getDateString(calendar.time)
+            val startDate = getDateString(getCurrentDate())
+            val endDate = getDateString(getEndDate())
 
             viewModelScope.launch {
                 _asteroidRepository.getPicture(apiKey = Constants.apiKey)

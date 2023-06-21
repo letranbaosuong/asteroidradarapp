@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AsteroidRadarApp"
         tools:targetApi="31">
+        <meta-data
+            android:name="ASTEROID_API_KEY"
+            android:value="sh8tdyp8EfB5WUHMNKjOzXZy5r0vQwBCN7hobWjY" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
